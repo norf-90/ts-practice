@@ -1,0 +1,24 @@
+{
+  "name": "typescript-practice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "lite-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/norf-90/TypeScript-Practice.git"
+  },
+  "keywords": [],
+  "author": "Oleksandr Shmatko <YOUR_EMAIL>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/norf-90/TypeScript-Practice/issues"
+  },
+  "homepage": "https://github.com/norf-90/TypeScript-Practice#readme",
+  "devDependencies": {
+    "lite-server": "^2.6.1"
+  }
+}
