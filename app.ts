@@ -165,7 +165,72 @@
 // }
 
 // -----------NEVER-------------------------
-function generateError(message: string, status: number): never {
-  throw { message, status };
-}
-generateError('An error', 500);
+// function generateError(message: string, status: number): never {
+//   throw { message, status };
+// }
+// generateError('An error', 500);
+
+// ----------FUNCTION TYPE-------------------------
+// let callback: (num: number) => void
+// callback = (num) =>{
+//   console.log(num);
+// }
+// callback('string') // error
+
+// function calc(
+//   param1: number,
+//   param2: number,
+//   callback: (num1: number, num2: number) => number
+// ): void {
+//   console.log('result', callback(param1, param2));
+// }
+
+// calc(1, 1, (num1, num2) => num1 + num2);
+// calc(1, 1, (num1, num2) => num1 - num2);
+
+// --------------Custom Types-----------------------------------
+// // Опишемо тип
+// type DatabaseDate = {
+//   id: Number;
+//   price: Number;
+//   permission: string[];
+//   details: {
+//     title: string;
+//     description?: String;
+//   };
+// };
+// // Призначимо тип для об'єкта
+// const firstData: DatabaseDate = {
+//   id: 1,
+//   price: 10.99,
+//   permission: ['read', 'write'],
+//   details: {
+//     title: 'New product',
+//     description: 'this is awesome product',
+//   },
+// };
+
+// const secondData: DatabaseDate = {
+//   id: 1,
+//   price: 10.99,
+//   permission: ['read', 'write'],
+//   details: {
+//     title: 'New product',
+//   },
+// };
+
+// export { DatabaseDate };
+
+// ---------------------OPTIONAL PARAMETERS --------------------
+// function optional(num?: number): void {}
+// optional();
+
+// type CustomType = {
+//   name: string;
+//   sex?: 'man' | 'woman';
+// };
+
+// const person: CustomType = {
+//   name: 'Don',
+// };
+// person.sex = 'man';
