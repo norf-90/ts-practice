@@ -1,3 +1,29 @@
+// =========== NULL ========================
+const n: null = null;
+const n1: null = undefined;
+const n2: any = null;
+const n3: number = null;
+const n4: string = null;
+const n5: boolean = null;
+const n6: undefined = null;
+
+interface User6 {
+  name: string;
+}
+
+function getUser() {
+  if (Math.random() > 0.5) {
+    return null;
+  } else {
+    return {
+      name: 'Oleksandr',
+    } as User6;
+  }
+}
+const user6 = getUser();
+if (user6) {
+  const n55 = user6.name;
+}
 // =========== NEVER =======================
 function generateError(message: string): never {
   throw new Error(message);
