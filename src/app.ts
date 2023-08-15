@@ -1,3 +1,41 @@
+// =========== NEVER =======================
+function generateError(message: string): never {
+  throw new Error(message);
+}
+
+function dumpError(): never {
+  while (true) {}
+}
+
+function rec(): never {
+  return rec();
+}
+// -----------------------------------------
+type paymentAction = 'refund' | 'checkout' | 'reject';
+function processAction(action: paymentAction) {
+  switch (action) {
+    case 'refund':
+      console.log('do refund');
+      break;
+    case 'checkout':
+      console.log('do checkout');
+      break;
+    case 'reject':
+      console.log('do reject');
+      break;
+    default:
+      const _: never = action;
+      throw new Error('something goes wrong');
+  }
+}
+// -----------------------------------------
+
+function isString(x: string | number): boolean {
+  if (typeof x === 'string') return true;
+  else if (typeof x === 'number') return false;
+  generateError('something goes wrong');
+}
+
 // =========== UNKNOWN =====================
 let input: unknown;
 input = 3;
