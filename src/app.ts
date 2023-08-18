@@ -1,484 +1,374 @@
-// ============= Asserts =================
-interface User9 {
-  name: string;
-}
-const curUser = {};
-asserUser(curUser);
-curUser.name = 'Oleksandr';
+// ====== Visibility ======
+{
+  class Vehicle {
+    public make: string;
+    private damages: string[] = [];
+    private _model: string;
+    protected run: number = 0;
+    #price: number;
 
-function asserUser(obj: unknown): asserts obj is User9 {
-  if (typeof obj === 'object' && !!obj && 'name' in obj) {
-    return;
-  }
-  throw new Error('Not user');
-}
+    addDamage(damage: string) {
+      this.damages.push(damage);
+    }
 
-// ============= TYPE GUARD ==============
-interface User8 {
-  name: string;
-  email: string;
-  login: string;
-}
-const currentUser = {
-  name: 'Oleksandr',
-  email: 'oleksandr@mail.com',
-  login: 'norf',
-} as User8;
-interface Admin {
-  name: string;
-  role: number;
-}
+    set model(model: string) {
+      this._model = model;
+      this.#price = 100;
+    }
 
-function loggId(id: string | number) {
-  if (isString(id)) {
-    console.log(id);
-  } else {
-    console.log(id);
-  }
-}
+    get model() {
+      return this._model;
+    }
 
-// type guard
-function isString1(x: string | number): x is string {
-  return typeof x === 'string';
-}
-// -----------------------------------------
-function isAdmin(user: User8 | Admin): user is Admin {
-  return 'role' in user;
-}
-
-function isAdminAlternative(user: User8 | Admin): user is Admin {
-  return (user as Admin).role !== undefined;
-}
-
-function setRole(user: User8 | Admin) {
-  if (isAdmin(user)) {
-    user.role = 0;
-  } else {
-    throw new Error('User is not Admin');
-  }
-}
-
-// =========== TYPE CASTING ================
-let a7 = 5;
-let b7: string = a7.toString();
-
-let c = 'some string';
-let d: number = parseFloat(c);
-
-let e = new String(a7).valueOf();
-
-interface User7 {
-  name: string;
-  email: string;
-  login: string;
-}
-
-const user8 = {
-  name: 'Oleksandr',
-  email: 'oleksandr@mail.com',
-  login: 'norf',
-} as User7;
-const user9 = <User7>{
-  // not recommended, don't work in React
-  name: 'Oleksandr',
-  email: 'oleksandr@mail.com',
-  login: 'norf',
-};
-// -----------------------------------------
-const user7: User7 = {
-  name: 'Oleksandr',
-  email: 'oleksandr@mail.com',
-  login: 'norf',
-};
-interface Admin {
-  name: string;
-  role: number;
-}
-const admin1: Admin = {
-  ...user7,
-  role: 1,
-};
-
-function userToAdmin(user: User7): Admin {
-  return {
-    name: user.name,
-    role: 1,
-  };
-}
-// =========== NULL ========================
-const n: null = null;
-const n1: null = undefined;
-const n2: any = null;
-const n3: number = null;
-const n4: string = null;
-const n5: boolean = null;
-const n6: undefined = null;
-
-interface User6 {
-  name: string;
-}
-
-function getUser() {
-  if (Math.random() > 0.5) {
-    return null;
-  } else {
-    return {
-      name: 'Oleksandr',
-    } as User6;
-  }
-}
-const user6 = getUser();
-if (user6) {
-  const n55 = user6.name;
-}
-// =========== NEVER =======================
-function generateError(message: string): never {
-  throw new Error(message);
-}
-
-function dumpError(): never {
-  while (true) {}
-}
-
-function rec(): never {
-  return rec();
-}
-// -----------------------------------------
-type paymentAction = 'refund' | 'checkout' | 'reject';
-function processAction(action: paymentAction) {
-  switch (action) {
-    case 'refund':
-      console.log('do refund');
-      break;
-    case 'checkout':
-      console.log('do checkout');
-      break;
-    case 'reject':
-      console.log('do reject');
-      break;
-    default:
-      const _: never = action;
-      throw new Error('something goes wrong');
-  }
-}
-// -----------------------------------------
-
-function isString(x: string | number): boolean {
-  if (typeof x === 'string') return true;
-  else if (typeof x === 'number') return false;
-  generateError('something goes wrong');
-}
-
-// =========== UNKNOWN =====================
-let input: unknown;
-input = 3;
-input = ['string some '];
-
-function run(i: unknown) {
-  if (typeof i === 'number') {
-    i++;
-  } else {
-    i;
-  }
-}
-run(input);
-
-// -------------------------------------------------
-
-async function getData() {
-  try {
-    fetch('');
-  } catch (error) {
-    if (error instanceof Error) {
-      console.log(error.message);
+    // тем не менее в данном случае можем достучаться з екземпляра класса v (Vehicle)
+    // до его приватного свойства
+    isPriceEqual(v: Vehicle) {
+      return this.#price === v.#price;
     }
   }
+
+  class EuroTruck extends Vehicle {
+    setDamge() {
+      // this.damage;
+    }
+    setRun(km: number) {
+      this.run = km / 0.62;
+    }
+  }
+
+  new Vehicle();
+  new EuroTruck().make;
+  console.log(new Vehicle());
+  console.log(new EuroTruck());
 }
-// -------------------------------------------------------
-async function getDataForce() {
-  try {
-    fetch('');
-  } catch (error) {
-    const e = error as Error;
-    console.log(e.message);
+
+// ====== Class composition or extending ======
+{
+  class User {
+    name: string;
+    constructor(name: string) {
+      this.name = name;
+    }
+  }
+
+  class Users extends Array<User> {
+    searchByName(name: string) {
+      return this.filter(u => u.name === name);
+    }
+
+    override toString(): string {
+      return this.map(u => u.name).join(', ');
+    }
+  }
+
+  const users = new Users();
+  users.push(new User('Oleksandr'));
+  users.push(new User('Ivan'));
+  console.log(users.toString());
+
+  class UserList {
+    users: User[];
+
+    push(u: User) {
+      this.users.push(u);
+    }
+  }
+  new UserList();
+  // --------------------------------------------------------
+  class Payment {
+    date: Date;
+  }
+  class UserWithPayment extends Payment {
+    name: string;
+  }
+  class UserWithPayment2 {
+    user: User;
+    payment: Payment;
+    constructor(user: User, payment: Payment) {
+      this.payment = payment;
+      this.user = user;
+    }
+  }
+  new UserWithPayment();
+  new UserWithPayment2(new User('name'), new Payment());
+
+  console.log('');
+}
+
+// ====== Extends ======
+{
+  type PaymentStatus = 'new' | 'paid';
+  class Payment {
+    id: number;
+    status: PaymentStatus = 'new';
+
+    constructor(id: number) {
+      this.id = id;
+    }
+
+    pay() {
+      this.status = 'paid';
+    }
+  }
+
+  class ParsistendPayment extends Payment {
+    databaseId: number;
+    payedAt: Date;
+
+    constructor() {
+      const id = Math.random();
+      super(id);
+    }
+
+    save() {
+      // Add to DB
+    }
+
+    override pay(date?: Date) {
+      // super.pay();
+      if (date) {
+        this.payedAt = date;
+      }
+    }
+  }
+
+  console.log(new ParsistendPayment());
+}
+
+// --------------------------------------
+
+class User {
+  name: string = 'user';
+
+  constructor() {
+    console.log(this.name);
   }
 }
-// -------------------------------------------------------
-type U1 = unknown | null;
-type U2 = unknown & string;
 
-// =========== VOID ========================
-function logID4(id: string | number): void {
-  console.log(id);
-}
-const a = logID4(1);
-
-function multiply4(f: number, s?: number) {
-  if (!s) {
-    return f * f;
+class Admin extends User {
+  name: string = 'admin';
+  constructor() {
+    console.log('log something');
+    super();
+    console.log(this.name);
   }
-  return f * s;
 }
 
-type voidFunc = () => void;
-const f1: voidFunc = () => {};
-const f2: voidFunc = () => {
-  return true;
-};
-const b = f2();
-
-const skills = ['dev', 'devops'];
-const user4 = {
-  s: ['s'],
-};
-skills.forEach(skill => user4.s.push(skill));
-// =========== OPTIONAL ====================
-interface User {
-  login: string;
-  password?: string;
-}
-const user: User = {
-  login: 'mail.com',
-};
-// ---------------------------------------------
-function multiply(first: number, second?: number): number {
-  if (!second) {
-    return first * first;
+const admin = new Admin();
+// ----------------------------
+class HttpError extends Error {
+  code: number;
+  constructor(message: string, code?: number) {
+    super(message);
+    this.code = code ?? 500;
   }
-  return first * second;
 }
-// -------------------------------------------------
-interface UserPro {
-  login: string;
-  password?: {
-    type: 'primary' | 'secondary';
-  };
+// ====== Implements ======
+{
+  interface ILogger {
+    log(...args: any[]): void;
+    error(...args: any[]): void;
+  }
+
+  class Logger implements ILogger {
+    log(...args: any[]): void {
+      console.log(...args);
+    }
+    async error(...args: any[]): Promise<void> {
+      // some fetch
+      console.log(...args);
+    }
+  }
+  new Logger();
+
+  // -------------------------------------------
+  interface IPayable {
+    pay(paymentId: number): void;
+    price?: number;
+  }
+
+  interface IDeletable {
+    delete(): void;
+  }
+
+  class User implements IPayable, IDeletable {
+    delete(): void {
+      throw new Error('Method not implemented.');
+    }
+    pay(paymentId: number | string): void {
+      // some logic
+      console.log(paymentId);
+    }
+    price?: number | undefined;
+  }
+  new User();
 }
-function testPass(user: UserPro) {
-  const t = user.password?.type;
-  console.log(t);
-}
-// -----------------------------------------------------
-function test(param?: string) {
-  const t = param ?? multiply(5);
-  console.log(t);
-}
+// ====== Getter and Setter ======
+{
+  class User {
+    _login: string;
+    password: string;
+    createdAt: Date;
 
-// =========== TYPES or INTERFACES =========
-type ID = string | number;
-interface IDI {
-  ID: string | number;
-}
+    // setters and getter can't be async
+    set login(l: string) {
+      this._login = 'user-' + l;
+      this.createdAt = new Date();
+    }
 
-interface User3 {
-  name: string;
-}
-interface User3 {
-  age: number;
-}
-const user3: User3 = {
-  name: 'as',
-  age: 33,
-};
+    get login() {
+      return this._login;
+    }
 
-// =========== INTERFACES ==================
-interface User2 {
-  name: string;
-  age: number;
-  skills: string[];
+    // set password(p: string) {
+    //   // sync methods
+    // }
 
-  log: (id: number) => string;
-}
+    async setPassword(p: string) {
+      this.password = p;
+    } // class methods can by async
+  }
 
-interface Role2 {
-  roleId: number;
-}
-
-interface UserWithRole2 extends User2, Role2 {
-  cratedAt: Date;
-}
-
-let user2: UserWithRole2 = {
-  name: 'asd',
-  age: 11,
-  skills: ['1', '2'],
-  roleId: 1,
-  cratedAt: new Date(),
-  log(id) {
-    return id.toString();
-  },
-};
-// ---------------------------------------
-interface UserDic {
-  [index: number]: User;
-}
-type UserDic2v = {
-  [index: number]: User;
-};
-// =========== TYPE ALIASES ================
-type User1 = {
-  name: string;
-  age: number;
-  skills: string[];
-};
-
-type Role1 = {
-  name: string;
-  id: number;
-};
-
-// type UserWithRole = User & Role;
-// let user: UserWithRole = {
-//   id: 1,
-//   name: 'asd',
-//   age: 11,
-//   skills: ['1', '2'],
-// };
-type UserWithRole1 = {
-  user: User1;
-  role: Role1;
-};
-
-let user1: UserWithRole1 = {
-  user: {
-    name: 'some name',
-    age: 22,
-    skills: ['1', '2'],
-  },
-  role: {
-    name: 'dev',
-    id: 130394,
-  },
-};
-
-type httpMethod = 'post' | 'get';
-function fetchWithAuth(url: string, method: httpMethod) {
-  console.log(url, method);
+  const user = new User();
+  user.login = 'Aleksandr';
+  console.log(user);
+  console.log(user.login);
 }
 
-// ========== LITERAL TYPES =================
+// ====== Method overload ======
+{
+  class User {
+    skills: string[] = [];
 
-function fetchWithAuth1(url: string, method: 'post' | 'get') {
-  console.log(url, method);
+    addSkills(skills: string[]): void;
+    addSkills(skill: string): void;
+    addSkills(skillOrSkills: string | string[]) {
+      if (skillOrSkills instanceof Array) {
+        this.skills.concat(skillOrSkills);
+      } else if (typeof skillOrSkills === 'string') {
+        this.skills.push(skillOrSkills);
+      }
+    }
+  }
+
+  new User().addSkills('method overload');
 }
-fetchWithAuth1('https://someurl', 'get');
-let method = 'post';
-fetchWithAuth1('htpps://someurl', method as 'post');
 
-// ================== UNION ==================
-
-function logId(id: string | number | boolean) {
-  if (typeof id === 'string') {
-    console.log(id.toLowerCase());
-  } else if (typeof id === 'number') {
-    console.log(id);
+// ---------------------
+function run(distance: string): number;
+function run(distance: number): number;
+function run(distance: number | string): string | number {
+  if (typeof distance === 'number') {
+    console.log(distance);
+    return distance;
+  } else if (typeof distance === 'string') {
+    const res: number = isNaN(Number.parseInt(distance)) ? -1 : Number.parseInt(distance);
+    console.log(res);
+    return res;
   } else {
-    console.log(id);
+    console.log(0);
+    return 0;
   }
 }
+run(1);
+run('5555sgfkgj');
+run('sldkfj');
 
-function logError(err: string | string[]) {
-  if (Array.isArray(err)) {
-    console.log(err);
-  } else {
-    console.log(err);
+// ====== Methods ======
+{
+  enum PaymentStatus {
+    Holded,
+    Processed,
+    Reversed,
   }
-}
+  class Payment {
+    id: number;
+    status: PaymentStatus;
+    createdAt: Date;
+    updatedAt: Date;
 
-function logObj(obj: { a: number } | { b: number }) {
-  if ('a' in obj) {
-    console.log(obj.a);
-  } else {
-    console.log(obj.b);
+    constructor(id: number) {
+      this.id = id;
+      this.createdAt = new Date();
+      this.status = PaymentStatus.Holded;
+    }
+
+    getPaymentLifeTime(): number {
+      return new Date().getTime() - this.createdAt.getTime();
+    }
+
+    unholdPaymetn(): void {
+      if (this.status === PaymentStatus.Processed) {
+        throw new Error('Платеж не может быть возвращен');
+      }
+      this.status = PaymentStatus.Reversed;
+      this.updatedAt = new Date();
+    }
   }
+
+  const payment = new Payment(1);
+  // console.log(payment);
+  payment.unholdPaymetn();
+  // console.log(payment);
+  const time = payment.getPaymentLifeTime();
+  time;
+  // console.log(time);
 }
 
-function logMultipleIds(a: string | number, b: string | boolean) {
-  if (a === b) {
-    console.log(a);
-  } else {
-    console.log(a);
+// ====== Constructor ======
+{
+  class User {
+    name: string;
+    age: number;
+
+    constructor();
+    constructor(name: string);
+    constructor(age: number);
+    constructor(name: string, age: number);
+    constructor(ageOrName?: string | number, age?: number) {
+      if (typeof ageOrName === 'string') {
+        this.name = ageOrName;
+      } else if (typeof ageOrName === 'number') {
+        this.age = ageOrName;
+      }
+
+      if (typeof age === 'number') {
+        this.age = age;
+      }
+    }
   }
-}
-const result2 = {
-  message: 'Платеж успешен',
-  statusCode: StatusCode.SUCCESS,
-};
+  const user = new User('Oleksandr');
+  const user2 = new User();
+  const user3 = new User(33);
+  const user4 = new User('Olkesandr', 33);
+  user;
+  user2;
+  user3;
+  user4;
 
-// statusCode
-// 1 - success
-// 2 - in progress
-// 3 - rejected
-
-if (result2.statusCode === StatusCode.SUCCESS) {
-}
-
-function action(status: StatusCode) {
-  console.log(status);
-}
-action(StatusCode.SUCCESS);
-action(1);
-// action('p');
-
-const enum Roles {
-  ADMIN,
-  USER,
+  // console.log(user);
+  // console.log(user2);
+  // console.log(user3);
+  // console.log(user4);
 }
 
-const res2 = Roles.ADMIN;
+// ====== Class initialization ======
+{
+  class User {
+    name: string;
+    constructor(name: string) {
+      this.name = name;
+    }
+  }
 
-// ========Read only=========================
-const skill: readonly [number, string] = [1, 'Dev'];
-// skill[0] = 2;
+  const user = new User('Oleksandr');
+  // console.log(user);
+  user.name = 'Oleksandr Shmatko';
+  // console.log(user);
 
-const skillValues: readonly string[] = ['Dev', 'DevOps'];
-// skills[0] = '';
-// skillValues.push(' ');
-
-const skillValues2: ReadonlyArray<string> = ['str1', 'str2'];
-
-// ==============TUPLE===========================
-// const skill: [number, string] = [1, 'Dev'];
-// const [id, skillName] = skill;
-
-// const arr: [number, string, ...boolean[]] = [1, 'some string', true, true, false];
-
-// ============== Arrays ========================
-const skills: string[] = ['Dev', 'DevOps'];
-
-for (const skill of skills) {
-  console.log(skill.toLocaleLowerCase());
+  class Admin {
+    role: number;
+  }
+  const admin = new Admin();
+  admin.role = 1;
 }
-
-const result = skills
-  .filter((s: string) => s !== 'DevOps')
-  .map(s => s + '!')
-  .reduce((a, b) => a + b);
-console.log(result);
-
-// ============== functions types =======================
-function getFullName(userEntity: { firstName: string; surname: string }): string {
-  return `${userEntity.firstName} ${userEntity.surname}`;
-}
-
-const getFullNameArrow = (firstName: string, surname: string): string => {
-  return `${firstName} ${surname}`;
-};
-
-const user = {
-  firstName: 'Oleksandr',
-  surname: 'Shmatko',
-  city: 'Kyiv',
-  age: 33,
-};
-
-// console.log(getFullName(user));
-// =========================================================================
-
-let revenue: number = 1000;
-let bonust: number = 500;
-let c: string = 'sdf';
-let b: boolean = true;
-
-let res: number = revenue + bonust;
-// console.log(res);
