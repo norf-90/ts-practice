@@ -1,50 +1,14 @@
-// ====== Abstract Class ======
+// ====== built-in generic ======
 {
-  abstract class Controller {
-    abstract handle(req: any): void;
-    handleWithLogs(req: any) {
-      console.log('start');
-      this.handle(req);
-      console.log('end');
-    }
+  const num: Array<number> = [1, 2, 3];
+  async function test() {
+    const a = new Promise<number>((resolve, reject) => {
+      resolve(1);
+    });
   }
-  // new Controller() =====> ERROR
-  class UserController extends Controller {
-    handle(req: any): void {
-      console.log(req);
-    }
-  }
-  const c = new UserController();
-  c.handleWithLogs('request');
 
-  console.log(' ');
-}
-
-// ====== This typing ======
-{
-  class UserBuilder {
-    name: string;
-
-    setName(name: string): this {
-      this.name = name;
-      return this;
-    }
-    isAdmin(): this is AdminBuilder {
-      return this instanceof AdminBuilder;
-    }
-  }
-  class AdminBuilder extends UserBuilder {
-    roles: string;
-  }
-  const res = new UserBuilder().setName('Oleg');
-  res;
-  const res2 = new AdminBuilder().setName('Ivan');
-  res2;
-
-  let user: UserBuilder | AdminBuilder = new UserBuilder();
-  if (user.isAdmin()) {
-    console.log(user);
-  } else {
-    console.log(user);
-  }
+  const check: Record<string, boolean> = {
+    drive: true,
+    kpp: false,
+  };
 }
