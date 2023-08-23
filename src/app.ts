@@ -1,3 +1,26 @@
+// ====== Function with generic ======
+{
+  function logMiddleware(data: any): any {
+    console.log(data);
+    return data;
+  }
+  function logMiddlewareGeneric<T>(data: T): T {
+    console.log(data);
+    return data;
+  }
+
+  const res = logMiddleware(10);
+  const resWithGeneric = logMiddlewareGeneric<number>(10);
+  const resWithGeneric2 = logMiddlewareGeneric<string>('str');
+
+  // -------------------------------------------
+  function getSplittedHalf<T>(data: Array<T>): Array<T> {
+    const l = data.length / 2;
+    return data.splice(0, l);
+  }
+  getSplittedHalf([1, 23, 3]);
+}
+
 // ====== built-in generic ======
 {
   const num: Array<number> = [1, 2, 3];
