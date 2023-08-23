@@ -1,3 +1,27 @@
+// ====== Generics in Classes ======
+class Resp<D, E> {
+  data?: D;
+  error?: E;
+  constructor(data?: D, error?: E) {
+    if (data) this.data = data;
+    if (error) this.error = error;
+  }
+}
+
+const resp = new Resp<string, number>('some data', 1);
+const resp2 = new Resp<string, number>('data');
+resp2.error;
+
+// -------------------------------------
+class HTTPResp<F> extends Resp<string, number> {
+  code: F;
+
+  setCode(code: F) {
+    this.code = code;
+  }
+}
+const resp3 = new HTTPResp();
+
 // ====== Generic's limits ======
 {
   class Vehicle {
