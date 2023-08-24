@@ -1,3 +1,43 @@
+// ====== Mixins ====== Ніхуя непонятно, но очень интересно
+
+{
+  type Constructor = new (...args: any[]) => {};
+  type GConstructor<T = {}> = new (...args: any[]) => T; // повертає значення типу Т (в нашому випадку типу классу)
+
+  class List {
+    constructor(public items: string[]) {}
+  }
+
+  class Accardion {
+    isOpened: boolean;
+  }
+
+  type ListType = GConstructor<List>; // // повертає значення типу List
+  type AccardionType = GConstructor<Accardion>;
+
+  class ExtendedListСlass extends List {
+    first() {
+      return this.items[0];
+    }
+  }
+
+  /* Міксін. Функція приймає класс (не його екземпляр)  генеруэмого типу (який наслідується від ListType) і розширяє його в класі ExtendedList та повертає ExtendedList */
+  function ExtendedList<TBase extends ListType & AccardionType>(Base: TBase) {
+    return class ExtendedList extends Base {
+      first() {
+        return { item: this.items[0], isOpened: this.isOpened };
+      }
+    };
+  }
+  class AccardionClass {
+    isOpened: boolean;
+    constructor(public items: string[]) {}
+  }
+  const list = ExtendedList(AccardionClass); // в list знаходиться посилання на класс ExtendedList
+  const res = new list(['first', 'second']); // створюємо екземпляр класу ExtendedList
+  console.log(res);
+}
+
 // ====== Generics in Classes ======
 class Resp<D, E> {
   data?: D;
